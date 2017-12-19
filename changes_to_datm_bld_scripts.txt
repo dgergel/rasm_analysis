@@ -1,0 +1,169 @@
+Index: bld/namelist_files/namelist_defaults_datm.xml
+===================================================================
+--- bld/namelist_files/namelist_defaults_datm.xml   (revision 1606)
++++ bld/namelist_files/namelist_defaults_datm.xml   (working copy)
+@@ -47,6 +47,7 @@
+     CPLHIST3HrWx = Run with CESM 3-hourly coupler history output
+     presaero     = prescribed aerosol forcing 
+     SHEFFIELD3Hr = Run with 3hrly Global Met Forcings from Shefield et al., 2006
++    CRUNCEP_V7   = Run with the CLM CRU NCEP forcing valid from 1901 to 2016 (force CLM)
+ 
+     CLM1PT.1x1_brazil
+     CLM1PT.1x1_camdenNJ
+@@ -70,6 +71,10 @@
+     CLMCRUNCEP.Solar
+     CLMCRUNCEP.Precip
+     CLMCRUNCEP.TPQW
++ 
++    CRUNCEP_V7.Solar
++    CRUNCEP_V7.Precip
++    CRUNCEP_V7.TPQWL
+ 
+     CORE2_NYF.GISS
+     CORE2_NYF.GXGXS
+@@ -127,6 +132,7 @@
+ <datamode datm_mode="COPYALL_NPS_CORE2_all" >COPYALL</datamode>
+ <datamode datm_mode="WRF"           >WRF</datamode>
+ <datamode datm_mode="SHEFFIELD3Hr"  >CLMNCEP</datamode>
++<datamode datm_mode="CRUNCEP_V7"    >CLMNCEP</datamode>
+ 
+ <!-- =========================================  -->
+ <!--- streams                                   -->
+@@ -141,6 +147,7 @@
+ <streamslist datm_mode="CPLHIST3HrWx">CPLHIST3HrWx.Solar,CPLHIST3HrWx.Precip,CPLHIST3HrWx.nonSolarNonPrecip</streamslist>
+ <streamslist datm_mode="WRF"      >WRF</streamslist>
+ <streamslist datm_mode="SHEFFIELD3Hr"  >SHEFFIELD3Hr</streamslist>
++<streamslist datm_mode="CRUNCEP_V7" >CRUNCEP_V7.Solar,CRUNCEP_V7.Precip,CRUNCEP_V7.TPQWL</streamslist>
+ 
+ <!-- =========================================  -->
+ <!--- vectors                                   -->
+@@ -156,6 +163,7 @@
+ <vectors datm_mode="COPYALL_NPS_CORE2_all" >u:v</vectors>
+ <vectors datm_mode="WRF"           >u:v</vectors>
+ <vectors datm_mode="SHEFFIELD3Hr"  >null</vectors>
++<vectors datm_mode="CRUNCEP_V7"    <null</vectors>
+ 
+ <!-- =========================================  -->
+ <!--- dtlimit (default)                         -->
+@@ -531,6 +539,83 @@
+   FLDS     lwdn
+ </strm_datvar>
+
++<!-- =============== -->
++<!-- == CRUNCEP_V7 = -->
++<!-- =============== -->
++
++<!-- == Solar    === -->
++<strm_year_start stream="CRUNCEP_V7.Solar">$DATM_CLMNCEP_YR_START</strm_year_start>
++<strm_year_end   stream="CRUNCEP_V7.Solar">$DATM_CLMNCEP_YR_END  </strm_year_end>
++<strm_year_align stream="CRUNCEP_V7.Solar">$DATM_CLMNCEP_YR_ALIGN</strm_year_align>
++<strm_domdir     stream="CRUNCEP_V7.Solar">$DIN_LOC_ROOT/share/domains/domain.clm</strm_domdir>
++<strm_domfil     stream="CRUNCEP_V7.Solar">domain.lnd.360x720_cruncep.100429.nc</strm_domfil>
++<strm_datdir     stream="CRUNCEP_V7.Solar">/p/work2/projects/rasm/cru-ncep/Solar6Hrly</strm_datdir>
++<strm_datfil     stream="CRUNCEP_V7.Solar">clmforc.cruncep.V7.c2016.0.5d.Solr.%ym.nc</strm_datfil>
++<strm_offset     stream="CRUNCEP_V7.Solar">0</strm_offset>
++<strm_tintalgo   stream="CRUNCEP_V7.Solar">coszen</strm_tintalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.Solar"                   >bilinear</strm_mapalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.Solar" ATM_GRID="360x720">copy</strm_mapalgo>
++<strm_domvar     stream="CRUNCEP_V7.Solar">
++  time    time
++  xc      lon
++  yc      lat
++  area    area
++  mask    mask
++</strm_domvar>
++<strm_datvar     stream="CRUNCEP_V7.Solar">
++  FSDS swdn
++</strm_datvar>
++
++<!-- == Precip    === -->
++<strm_year_start stream="CRUNCEP_V7.Precip">$DATM_CLMNCEP_YR_START</strm_year_start>
++<strm_year_end   stream="CRUNCEP_V7.Precip">$DATM_CLMNCEP_YR_END  </strm_year_end>
++<strm_year_align stream="CRUNCEP_V7.Precip">$DATM_CLMNCEP_YR_ALIGN</strm_year_align>
++<strm_domdir     stream="CRUNCEP_V7.Precip">$DIN_LOC_ROOT/share/domains/domain.clm</strm_domdir>
++<strm_domfil     stream="CRUNCEP_V7.Precip">domain.lnd.360x720_cruncep.100429.nc</strm_domfil>
++<strm_datdir     stream="CRUNCEP_V7.Precip">/p/work2/projects/rasm/cru-ncep/Precip6Hrly</strm_datdir>
++<strm_datfil     stream="CRUNCEP_V7.Precip">clmforc.cruncep.V7.c2016.0.5d.Prec.%ym.nc</strm_datfil>
++<strm_offset     stream="CRUNCEP_V7.Precip">0</strm_offset>
++<strm_tintalgo   stream="CRUNCEP_V7.Precip">nearest</strm_tintalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.Precip"                   >bilinear</strm_mapalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.Precip" ATM_GRID="360x720">copy</strm_mapalgo>
++<strm_domvar     stream="CRUNCEP_V7.Precip">
++  time    time
++  xc      lon
++  yc      lat
++  area    area
++  mask    mask
++</strm_domvar>
++<strm_datvar     stream="CRUNCEP_V7.Precip">
++  PRECTmms precn
++</strm_datvar>
++
++<!-- == TPQWL    === -->
++<strm_year_start stream="CRUNCEP_V7.TPQWL">$DATM_CLMNCEP_YR_START</strm_year_start>
++<strm_year_end   stream="CRUNCEP_V7.TPQWL">$DATM_CLMNCEP_YR_END  </strm_year_end>
++<strm_year_align stream="CRUNCEP_V7.TPQWL">$DATM_CLMNCEP_YR_ALIGN</strm_year_align>
++<strm_domdir     stream="CRUNCEP_V7.TPQWL">$DIN_LOC_ROOT/share/domains/domain.clm</strm_domdir>
++<strm_domfil     stream="CRUNCEP_V7.TPQWL">domain.lnd.360x720_cruncep.100429.nc</strm_domfil>
++<strm_datdir     stream="CRUNCEP_V7.TPQWL">/p/work2/projects/rasm/cru-ncep/TPQWL6Hrly</strm_datdir>
++<strm_datfil     stream="CRUNCEP_V7.TPQWL">clmforc.cruncep.V7.c2016.0.5d.TPQWL.%ym.nc</strm_datfil>
++<strm_offset     stream="CRUNCEP_V7.TPQWL">0</strm_offset>
++<strm_tintalgo   stream="CRUNCEP_V7.TPQWL">linear</strm_tintalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.TPQWL"                   >bilinear</strm_mapalgo>
++<strm_mapalgo    stream="CRUNCEP_V7.TPQWL" ATM_GRID="360x720">copy</strm_mapalgo>
++<strm_domvar     stream="CRUNCEP_V7.TPQWL">
++  time    time
++  xc      lon
++  yc      lat
++  area    area
++  mask    mask
++</strm_domvar>
++<strm_datvar     stream="CRUNCEP_V7.TPQWL">
++  TBOT     tbot
++  WIND     wind
++  QBOT     shum
++  PSRF     pbot
++  FLDS     lwdn
++</strm_datvar>
++
+ <!-- =========================================  -->
+ <!-- CORE2_NYF                                  -->
+ <!-- =========================================  -->
+Index: bld/namelist_files/namelist_definition_datm.xml
+===================================================================
+--- bld/namelist_files/namelist_definition_datm.xml (revision 1606)
++++ bld/namelist_files/namelist_definition_datm.xml (working copy)
+@@ -12,7 +12,7 @@
+ type="char*256"  
+ category="datm_setting"
+ group="datm_env_settings" 
+-valid_values="CLM_QIAN,CLM1PT,CLMCRUNCEP,CPLHIST3HrWx,CORE2_NYF,CORE2_IAF,WRF,COPYALL_NPS_v1,COPYALL_CORE2_v1,COPYALL_NPS_CORE2_all,WRF,SHEFFIELD3Hr">
++valid_values="CLM_QIAN,CLM1PT,CLMCRUNCEP,CPLHIST3HrWx,CORE2_NYF,CORE2_IAF,WRF,COPYALL_NPS_v1,COPYALL_CORE2_v1,COPYALL_NPS_CORE2_all,WRF,SHEFFIELD3Hr,CRUNCEP_V7">
+ Data Model mode to process forcing data
+ </entry>
+ 
+@@ -36,8 +36,8 @@
+ type="char*256"  
+ category="streams"
+ group="shr_strdata_nml" 
+-valid_values="CLMNCEP,COPYALL,CPLHIST,CORE2_NYF,CORE2_IAF,NULL,WRF,SHEFFIELD3Hr">
+-valid values: CLMNCEP,COPYALL,CPLHIST,CORE2_NYF,CORE2_IAF,NULL,WRF,SHEFFIELD3Hr
++valid_values="CLMNCEP,COPYALL,CPLHIST,CORE2_NYF,CORE2_IAF,NULL,WRF,SHEFFIELD3Hr,CRUNCEP_V7">
++valid values: CLMNCEP,COPYALL,CPLHIST,CORE2_NYF,CORE2_IAF,NULL,WRF,SHEFFIELD3Hr,CRUNCEP_V7
+ general method that operates on the data.  this is generally
+ implemented in the data models but is set in the strdata method for
+ convenience.  valid options are dependent on the data model and will
+@@ -88,6 +88,11 @@
+    surface models and other terrestrial modeling systems. It blends reanalysis 
+    data with observations and disaggregates in time and space. The dataset is 
+    currently available at 1.0 degree, 3-hourly resolution globally for 1948-2008. 
++datamode = "CRUNCEP_V7"
++   This dataset provides near-surface meteorological data for driving land 
++   surface models and other terrestrial modeling systems. It is favored by the 
++   Land Model Working Group (LMWG) when coupling an active land model. This is 
++   the newest version of the CRU-NCEP dataset and extends from 1901-2016. 
+ </entry>
+ 
+ <entry id="domainfile" 
+
+
